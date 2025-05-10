@@ -1,0 +1,32 @@
+services:
+    mosquitto:
+        image: eclipse-mosquitto
+        container_name: mosquitto_broker
+        volumes:
+            - ./config:/mosquitto/config
+            - ./data:/mosquitto/data
+            - ./log:/mosquitto/log
+        restart: always
+        ports:
+        - 1883:1883
+        - 9001:9001
+        stdin_open: true
+        tty: true
+        healthcheck:
+            test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 15s
+    script_addtodb:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: always
+        container_name: addMQTTtoDB
+        depends_on:
+            mosquitto:
+                condition: service_healthy
+        volumes: 
+            - ./:/MQTT_database_script/
+        command: ["sh", "-c", "/MQTT_database_script/script/addmqtttemptodb.sh"]

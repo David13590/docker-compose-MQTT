@@ -1,0 +1,9 @@
+services: 
+    script_addtodb:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: addMQTTtoDB
+        volumes: 
+            - ./:/MQTT_database_script/
+        command: ["sh", "-c", "/MQTT_database_script/script/addmqtttemptodb.sh"]
