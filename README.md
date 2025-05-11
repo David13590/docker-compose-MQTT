@@ -5,7 +5,7 @@ subscriber and a python program to display temperature readings on a streamlit d
 ## Setup and deployment
 ### Requirements
 The requirede programs to run the project. Make sure that these are installed on the host machine.
-* Docker
+* Docker ([Guide to installing docker and docker compose on debian](https://docs.docker.com/engine/install/debian/))
 * Docker compose
 * A esp32 with a dallas DS18B20 from which you read the temperature
 * Vscode (with platformIO istalled) and these libraries:
@@ -38,7 +38,7 @@ The second compose file ```addmqtttodb_compose.yaml``` only runs the service to 
 Open the ```addmqtttemptodb.sh``` file with: ```sudo nano script/addmqtttemptodb.sh```  
 Change the broker ip to your host machine ip, the same as in the cpp program.
 
-Build the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_compose.yaml up --build ```  
+Build the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_compose.yaml up --build```  
 
 ***Flags***  
 ```-f``` Specifies what compose file to build.  
