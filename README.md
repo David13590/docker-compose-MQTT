@@ -13,14 +13,15 @@ The requirede programs to run the project. Make sure that these are installed on
     * milesburton/DallasTemperature
 
 ### Deployment
+Open Vscode and create a platformIO project, choose the aporopriate dev board (I use an Esp32-wroom32 board, so in the board dropdown i thoose **DOIT ESP32 DEVKIT V1**). Add the aforementioned liberaries through the platformIO UI.  
+
 Clone this repo with: ```git clone  https://github.com/David13590/docker-compose-MQTT.git```
 
-Open Vscode and create a platformIO project, choose the aporopriate dev board (I use an Esp32-wroom32 board, so in the board dropdown i thoose **DOIT ESP32 DEVKIT V1**). Add the aforementioned liberaries through the platformIO UI.  
 
 From the root folder of the cloned project, copy: ```main.cpp``` to the platformIO src folder. 
 
 In the ```main.cpp``` change: 
-* WIFI_SSID: Name if connected wifi
+* WIFI_SSID: Name of connected wifi
 * WIFI_PASSWORD: The password of the wifi you want the esp to connect to.
 * MQTT_SERVER: Is your host machine ip.
 
