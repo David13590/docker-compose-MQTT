@@ -4,7 +4,7 @@ subscriber and a python program to display temperature readings on a streamlit d
 
 ## Setup and deployment
 ### Requirements
-The requirede programs to run the project. Make sure that these are installed on the host machine.
+The requirede programs to run the project. Make sure that these are installed on the host machine. This doc is written for a debian host, some things may change when building on another OS.
 * Docker ([Guide to installing docker and docker compose on debian](https://docs.docker.com/engine/install/debian/))
 * Docker compose
 * A esp32 with a dallas DS18B20 from which you read the temperature
@@ -45,3 +45,25 @@ Build the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_co
 ```--build``` Tells docker to rebuild the image every time the command is run.
 
 Now the there should be two containers running, ```addMQTTtoDB``` and ```mosquitto_broker```. Check running conatiners with ```docker ps -a```
+<br>  
+<br>
+
+## Viewing the data
+To manually view the data in the DB, attach to the __addMQTTtoDB__ service with: ```docker exec -it addMQTTtoDB sh```  
+The DB is located in: ```/MQTT_database_script/temperature.db``` open it with sqlite3.  
+
+Open the DB with: ```sqlite3 MQTT_database_script/temperature.db``` You are now in the sqlite3 prompt with the DB loaded.
+<br>  
+List tables in DB: ```.tables```  
+View table structure: ```.schema```  
+Print all data: ```SELECT * FROM temperature1```  
+Print last 100 temp readings: ```SELECT * FROM (SELECT * FROM temperature1 ORDER BY ID DESC LIMIT 100)
+ORDER BY ID ASC;```
+
+
+<br>  
+
+## To Do
+Add: Streamlit dashboard service to compose file which reads DB  
+Add: Two more temperature sensors  
+Add: Temp sensors to streamlit dashboard
