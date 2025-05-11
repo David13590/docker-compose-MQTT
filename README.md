@@ -27,12 +27,13 @@ In the ```main.cpp``` change:
 * MQTT_SERVER: Is your host machine ip.
 * DALLAS_PIN: Change to the gpio pin with the temp sensor. 
 
-Now run the program.
+Now run the program.  
+Pay no mind to the serial monitor error, it will disapear once the compose file is built and started.
 ___________________________
 <br>
 
 Change directory to the subscriber subfolder: ```cd subscriber/```  
-This folder contains the main docker compose file ```addmqtttodb_Sub_Broker_compose.yaml``` which runs, as of writing this doc(10-05-25), the broker service aswell a the process that adds MQTT messages to the database.  
+This folder contains the main docker compose file ```addmqtttodb_Sub_Broker_compose.yaml``` which runs, as of writing this doc(10-05-25), the broker service aswell as the process that adds MQTT messages to the database.  
 The second compose file ```addmqtttodb_compose.yaml``` only runs the service to add MQTT messages to the DB. Which is used in tandem the compose file in the ```/broker``` folder in the root of this directory.
 
 Open the ```addmqtttemptodb.sh``` file with: ```sudo nano script/addmqtttemptodb.sh```  
