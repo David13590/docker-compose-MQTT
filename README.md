@@ -7,6 +7,7 @@ subscriber and a python program to display temperature readings on a streamlit d
 The requirede programs to run the project. Make sure that these are installed on the host machine.
 * Docker
 * Docker compose
+* A esp32 with a dallas DS18B20 from which you read the temperature
 * Vscode (with platformIO istalled) and these libraries:
     * knolleary/PubSubClient
     * paulstoffregen/OneWire
@@ -24,6 +25,7 @@ In the ```main.cpp``` change:
 * WIFI_SSID: Name of connected wifi
 * WIFI_PASSWORD: The password of the wifi you want the esp to connect to.
 * MQTT_SERVER: Is your host machine ip.
+* DALLAS_PIN: Change to the gpio pin with the temp sensor. 
 
 Now run the program.
 ___________________________
