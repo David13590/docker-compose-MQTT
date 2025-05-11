@@ -6,7 +6,7 @@
 
 #define WIFI_SSID "moto g24 power_5333"
 #define WIFI_PASSWORD "58ku5mzp"
-#define MQTT_SERVER "192.168.110.202"   // Debian IP
+#define MQTT_SERVER "192.168.110.202"
 #define MQTT_PORT 1883
 
 //#define DHTPIN 4

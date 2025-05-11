@@ -22,7 +22,7 @@ Clone this repo with: ```git clone  https://github.com/David13590/docker-compose
 From the root folder of the cloned project, copy: ```main.cpp``` to the platformIO src folder. 
 
 In the ```main.cpp``` change: 
-* WIFI_SSID: Name of connected wifi
+* WIFI_SSID: Name of wifi you want the esp to connect to.
 * WIFI_PASSWORD: The password of the wifi you want the esp to connect to.
 * MQTT_SERVER: Is your host machine ip.
 * DALLAS_PIN: Change to the gpio pin with the temp sensor. 
