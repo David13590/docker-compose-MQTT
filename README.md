@@ -104,9 +104,36 @@ dallasTemp2 = dallasSensor.getTempCByIndex(1);
 Last is to append the new sensor name and float to the payload. In the loop function, right under the dallas getTempByCIndex, is the MQTT payload this is the message the subscriber receives (the addMQTTtoDB container). Append the new sensor to the the list like so:  
 
 ```
-String payload = String(sensor_name1) + ":" + String(dallasTemp1) + ":" + String(dallasTemp2) + ":" + String(dallasTemp2);
+String payload = String(sensor_name1) + ":" + String(dallasTemp1) + " " + String(sensor_name2) + ":" + String(dallasTemp2);
 ```
 The two last strings is the newly added second sensor. This string gets chopped up by the addMQTTtoDB container with the awk program. Thats why we add semicolons to the payload, to tell awk where to split the message. When adding to the DB, it assumes that every two strings is a name and temperature reading.
+
+With two sensors the payload should print like this:
+```DS18B20_1:22.00 DS18B20_2:22.13```  
+
+The awk program splits the message into seperate strings. It counts every space as a new string so: ```DS18B20_1:22.00``` is string 1 and ```DS18B20_2:22.13```is string 2.  With that in mind. Now to the next step.
+
+---
+Open the script folder: ```/docker-compose-MQTT/subscriber/script/```  
+Open the sh file: ```sudo nano addmqtttemptodb.sh``` (Or use geany to open the file. A text editor with more conventional control scheme)
+
+In the second do loop, you will se two variables and echo's for each variable. The echo's are just so we can see the values when the docker container is running. The variables are where we split each received MQTT messege. The awk split for the first sensor is this:
+```
+sensorName1=$(echo "${payload}" | awk '{split($1,outputSensorName1,":"); print outputSensorName1[1]}')
+```
+
+The awk program works like this:
+```
+awk '{split($0, array, ":")}'
+            \/  \___/  \_/
+            |     |     |
+        string    |     delimiter
+                  |
+                array to store the pieces
+```
+Explain rest of addtodb script here
+
+---
 
 All done, save the file and navigate back to: ```cd subscriber/```  
 Rebuild the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_compose.yaml up --build```
