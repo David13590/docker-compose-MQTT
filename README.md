@@ -1,6 +1,6 @@
 # Docker and Docker compose project with mosquitto_MQTT and streamlit 
 This project aims to develop a deployable docker environment, that combines a mosquitto broker, 
-subscriber and a python program to display temperature readings on a streamlit dashboard. Making use of a DS18B20 dallas temperature sensor on a esp32.
+subscriber and a python program to display temperature readings on a streamlit dashboard. Making use of DS18B20 dallas temperature sensors on a esp32.
 
 ## Setup and deployment
 ### Requirements
@@ -46,12 +46,10 @@ Build the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_co
 
 Now the there should be three containers running:   
 ```addMQTTtoDB```: Subscribes to topics and adds data to DB  
-```mosquitto_broker```: Acts as borker service.... thats it.   
+```mosquitto_broker```: Acts as broker service.... thats it.   
 ```st_dashboard```: Reads the DB and runs a dashboard with streamlit. 
-   
-Check running conatiners with ```docker ps -a```
 
-  
+Check running conatiners with ```docker ps -a```
 <br>
 
 ## Viewing the data
@@ -73,10 +71,50 @@ The dashboard container also prints the url to terminal.
 
 <br>  
 
-## Changing IP-addresses and adding sensors.
+## Adding sensors.
+To add a sensor, connect another DS18B20 to the same onewire bus.  
+See this guide for adding multiple sensors to the same bus. ([Multiple sensors with onewire](https://lastminuteengineers.com/multiple-ds18b20-arduino-tutorial/))
+
+Navigate to the main cpp program, located the root of the project folder: ```/docker-compose-MQTT/main.cpp```  
+Open it with nano, vscode or any text editor. 
+
+To add a sensor:  
+Create a new variable of type float: ```float dallasTemp2```  
+Give the sensor a name of type string: ```String sensor_name2 = "DS18B20_2"```  
+
+With two sensors added, it would look something like this:
+```
+// Sensor1
+float dallasTemp1;
+String sensor_name1 = "DS18B20_1"; 
+
+//Sensor2
+float dallasTemp2;
+String sensor_name2 = "DS18B20_2"; 
+```
+<br>
+
+Now add the new sensor variable to the index of dallas sensors. Go to the void loop function, and add the sensor with: ```dallasTemp2 = dallasSensor.getTempCByIndex(1);```  
+When adding sensors to the index remeber to increment the index. So sensor1 gets index 0, sensor2 index 1 etc.
+```
+dallasTemp1 = dallasSensor.getTempCByIndex(0);
+dallasTemp2 = dallasSensor.getTempCByIndex(1);
+```
+<br>
+Last is to append the new sensor name and float to the payload. In the loop function, right under the dallas getTempByCIndex, is the MQTT payload this is the message the subscriber receives (the addMQTTtoDB container). Append the new sensor to the the list like so:  
+
+```
+String payload = String(sensor_name1) + ":" + String(dallasTemp1) + ":" + String(dallasTemp2) + ":" + String(dallasTemp2);
+```
+The two last strings is the newly added second sensor. This string gets chopped up by the addMQTTtoDB container with the awk program. Thats why we add semicolons to the payload, to tell awk where to split the message. When adding to the DB, it assumes that every two strings is a name and temperature reading.
+
+All done, save the file and navigate back to: ```cd subscriber/```  
+Rebuild the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_compose.yaml up --build```
+
+## Changing IP-addresses, URL and MQTT topics
 To do
 
 ## To Do
 Add: Streamlit dashboard service to compose file which reads DB.   __DONE!!!__  
-Add: Two more temperature sensors which writes to db  
-Add: Temp sensors to streamlit dashboard
+Add: Two more temperature sensors which writes to db __PARTIAL! (Added one sensor)__  
+Add: Temp two new sensors to streamlit dashboard
