@@ -24,16 +24,15 @@ From the root folder of the cloned project, copy: ```main.cpp``` to the platform
 In the ```main.cpp``` change: 
 * WIFI_SSID: Name of wifi you want the esp to connect to.
 * WIFI_PASSWORD: The password of the wifi you want the esp to connect to.
-* MQTT_SERVER: Is your host machine ip.
+* MQTT_SERVER: To your host machine ip.
 * DALLAS_PIN: Change to the gpio pin with the temp sensor. 
 
 Now run the program.  
 Pay no mind to the serial monitor error, it will disapear once the compose file is built and started.
 ___________________________
-<br>
 
 Change directory to the subscriber subfolder: ```cd subscriber/```  
-This folder contains the main docker compose file ```addmqtttodb_Sub_Broker_compose.yaml``` which runs, the broker service, the process that adds MQTT messages to the database aswell as the script that reads and starts a streamlit dashboard.  
+This folder contains the main docker compose file ```addmqtttodb_Sub_Broker_compose.yaml``` which runs, the broker service, the process that adds MQTT messages to the database, aswell as the script that reads and starts a streamlit dashboard.  
 The second compose file ```addmqtttodb_compose.yaml``` only runs the service to add MQTT messages to the DB. Which is used in tandem the compose file in the ```/broker``` folder in the root of this directory.
 
 Open the ```addmqtttemptodb.sh``` file with: ```sudo nano script/addmqtttemptodb.sh```  
@@ -45,7 +44,12 @@ Build the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_co
 ```-f``` Specifies what compose file to build.  
 ```--build``` Tells docker to rebuild the image every time the command is run.
 
-Now the there should be two containers running, ```addMQTTtoDB``` and ```mosquitto_broker```. Check running conatiners with ```docker ps -a```
+Now the there should be three containers running:   
+```addMQTTtoDB```: Subscribes to topics and adds data to DB  
+```mosquitto_broker```: Acts as borker service.... thats it.   
+```st_dashboard```: Reads the DB and runs a dashboard with streamlit. 
+   
+Check running conatiners with ```docker ps -a```
 
   
 <br>
@@ -64,8 +68,8 @@ Print last 100 temp readings: ```SELECT * FROM (SELECT * FROM temperature1 ORDER
 ORDER BY ID ASC;```
 
 #### Viewing with the dashboard
-If you have setup the secrets.toml file correctly, it is as simple as opening a browser and pasting this url: ```0.0.0.0:8501```  
-This server address can be changed in the main compose file: ```addmqtttodb_Sub_Broker_compose.yaml```
+To view the dashboard. Open a browser and past this url: ```0.0.0.0:8501```  
+The dashboard container also prints the url to terminal.
 
 <br>  
 
