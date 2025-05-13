@@ -2,25 +2,22 @@
 #include <PubSubClient.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-//#include <DHT.h>
 
-#define WIFI_SSID "moto g24 power_5333"
-#define WIFI_PASSWORD "58ku5mzp"
-#define MQTT_SERVER "192.168.110.202"
+#define WIFI_SSID "<YOUR WIFI NAME>"
+#define WIFI_PASSWORD "<YOUR WIFI PASS>"
+#define MQTT_SERVER "<HOST MACHINE IP>"
 #define MQTT_PORT 1883
-
-//#define DHTPIN 4
-//#define DHTTYPE DHT11
-#define DALLAS_PIN 17
+#define DALLAS_ONEWIRE_PIN 17
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 OneWire onewire(DALLAS_PIN);
 DallasTemperature dallasSensor(&onewire);
-//DHT dht(DHTPIN, DHTTYPE);
 
+//Give new sensors a float value and string with a name
+//Sensor1
 float dallasTemp;
-String sensor_name1 = "DS18B20_1"; 
+String sensor_name1 = "DS18B20_1";
 
 void connectWiFi() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -50,7 +47,6 @@ void setup() {
   Serial.begin(9600);
   dallasSensor.begin();
   delay(1000);
-  //dht.begin();
 
   connectWiFi();
   client.setServer(MQTT_SERVER, MQTT_PORT);
@@ -62,12 +58,12 @@ void loop() {
   }
   client.loop();
   dallasSensor.requestTemperatures();
+  
+  // Add sensors to this list, increment the index with each new sensor
   dallasTemp = dallasSensor.getTempCByIndex(0);
-  //float temp = dht.readTemperature();
-  //float hum = dht.readHumidity();
 
   if (!isnan(dallasTemp) && !isnan(dallasTemp)) {
-    String payload = String(sensor_name1) + ": " + String(dallasTemp) /*+ ", temp: " + String(dallasTemp) + ""*/;
+    String payload = String(sensor_name1) + ": " + String(dallasTemp);
     client.publish("esp32/ds/temperature", payload.c_str());
     Serial.println("Sent: " + payload);
   } else {
