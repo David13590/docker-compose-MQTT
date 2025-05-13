@@ -1,22 +1,32 @@
-#!/bin/bash
-BROKER_IP=192.168.110.202
-TOPIC=esp32/ds/temperature
-DATABASE=/home/david/Programming/python/temperature.db
-TABLE1=temperature1
+import matplotlib.pyplot as plt
+import streamlit as st
+import pandas as pd
+import numpy as np
+import time
+import altair as alt
+from sqlalchemy import text
 
-while true
-do
-	#Get MQTT msg
-	mosquitto_sub -h "$BROKER_IP" -t "$TOPIC" | while read -r payload
-	do
-		#Split MQTT output
-		sensorName=$(echo "${payload}" | awk '{split($0,outputSensorName,":"); print outputSensorName[1]}')
-		temp=$(echo "${payload}" | awk '{split($0,outputTemp,":"); print outputTemp[2]}')
-		echo "${sensorName}"
-		echo "${temp}"
+conn = st.connection('temperature_db', type='sql')
 
-		#Add to db
-		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading) VALUES('$sensorName', '$temp');" .quit
-	done
-	sleep 150
-done
+#Read data from db
+def updateGraph():
+	conn = st.connection('temperature_db', type='sql')
+	temperature1_table = conn.query('SELECT * FROM temperature1 ORDER BY id')
+	temperature_df = pd.DataFrame(temperature1_table)
+	#selected_columns = temperature_df.loc[:, ['timestamp', 'reading']]
+	#return selected_columns
+	return temperature_df
+
+# Main Streamlit app
+placeholder = st.empty()
+while True:
+	df = updateGraph()
+	with placeholder.container():
+		#st.altair_chart(df)
+		#st.dataframe(df)
+		st.line_chart(df, y=["reading"])
+		print(df["reading"])
+	time.sleep(5)
+	st.cache_data.clear()
+	# Rerun Streamlit to update the chart
+	st.rerun()
