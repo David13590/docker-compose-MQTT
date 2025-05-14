@@ -78,7 +78,7 @@ See this guide for adding multiple sensors to the same bus. ([Multiple sensors w
 Three files must be modified to add sensors to the system.
 - ```main.cpp```
 - ```addmqtttemptodb.sh```
-- 
+- ```st_active_temperature_graph.py```
 
 We will go through each file below.
 
@@ -164,7 +164,7 @@ awk '{split($2,outputSensorName2,":");}'
             |        
         Increment this                      
 ```
-This is also where the space in the payload comes into play. When chosing a string with ```$1```or ```$2```, evey space in the messege is a new string. So taking a look a the received payload:
+This is also where the space in the payload comes into play. When chosing a string with ```$1```or ```$2```, evey space in the message is a new string. So taking a look a the received payload:
 ```
 DS18B20_1:22.00 DS18B20_2:22.13
 \____________/ \/ \___________/
@@ -190,6 +190,10 @@ Last is to add the two new variables, the sensor name and reading to the DB.
 Replacing variables in the VALUES field with the variables of the new sensor.
 
 You are now done with this file. Save and exit
+
+---
+
+TO DO: explain st_active_temperature_graph.py
 
 ---
 With every new sensor make sure to:
