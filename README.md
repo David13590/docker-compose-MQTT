@@ -114,9 +114,9 @@ Last is to append the new sensor name and float to the payload. In the loop func
 ```
 String payload = String(sensor_name1) + ":" + String(dallasTemp1) + " " + String(sensor_name2) + ":" + String(dallasTemp2);
 ```
-The two last strings is the newly added second sensor. This string gets chopped up by the addMQTTtoDB container with the awk program. Thats why we add semicolons to the payload, to tell awk where to split the message. When adding to the DB, it assumes that every two strings is a name and temperature reading.
+The two last strings is the newly added second sensor. This string gets chopped up by the addMQTTtoDB container with the awk program. Thats why we add semicolons and spaces to the payload, to tell awk where to split the message. When adding to the DB, it assumes that every space signals a new name and temperature reading.
 
-With two sensors the payload should print like this:
+With two sensors the payload should print like this. Note the space between the first temperature and second name:
 ```DS18B20_1:22.00 DS18B20_2:22.13```  
 
 The awk program splits the message into seperate strings. It counts every space as a new string so: ```DS18B20_1:22.00``` is string 1 and ```DS18B20_2:22.13```is string 2.  With that in mind. Now to the next step.
