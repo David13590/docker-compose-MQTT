@@ -11,11 +11,14 @@ conn = st.connection('temperature_db', type='sql')
 #Read data from db
 def updateGraph():
 	conn = st.connection('temperature_db', type='sql')
-	temperature1_table = conn.query('SELECT * FROM temperature1 ORDER BY id')
-	temperature_df = pd.DataFrame(temperature1_table)
-	#selected_columns = temperature_df.loc[:, ['timestamp', 'reading']]
-	#return selected_columns
-	return temperature_df
+	
+	#Add sensor query here
+	temperature1_sensor1 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_1" ORDER BY id')
+	temperature1_sensor2 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_2" ORDER BY id')
+	
+	temperature1_sensor1_df = pd.DataFrame(temperature1_sensor1)
+	temperature1_sensor2_df = pd.DataFrame(temperature1_sensor2)
+	return temperature1_sensor1_df
 
 # Main Streamlit app
 placeholder = st.empty()

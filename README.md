@@ -28,7 +28,7 @@ In the ```main.cpp``` change:
 * DALLAS_PIN: Change to the gpio pin with the temp sensor. 
 
 Now run the program.  
-Pay no mind to the serial monitor error, it will disapear once the compose file is built and started.
+Pay no mind to the serial monitor error, it will disappear once the compose file is built and started.
 ___________________________
 
 Change directory to the subscriber subfolder: ```cd subscriber/```  
@@ -75,6 +75,14 @@ The dashboard container also prints the url to terminal.
 To add a sensor, connect another DS18B20 to the same onewire bus.  
 See this guide for adding multiple sensors to the same bus. ([Multiple sensors with onewire](https://lastminuteengineers.com/multiple-ds18b20-arduino-tutorial/))
 
+Three files must be modified to add sensors to the system.
+- ```main.cpp```
+- ```addmqtttemptodb.sh```
+- 
+
+We will go through each file below.
+
+### Adding sensors: main.cpp
 Navigate to the main cpp program, located the root of the project folder: ```/docker-compose-MQTT/main.cpp```  
 Open it with nano, vscode or any text editor. 
 
@@ -114,8 +122,10 @@ With two sensors the payload should print like this:
 The awk program splits the message into seperate strings. It counts every space as a new string so: ```DS18B20_1:22.00``` is string 1 and ```DS18B20_2:22.13```is string 2.  With that in mind. Now to the next step.
 
 ---
+
+### Adding sensors: addmqtttempdb.sh
 Open the script folder: ```/docker-compose-MQTT/subscriber/script/```  
-Open the sh file: ```sudo nano addmqtttemptodb.sh``` (Or use geany to open the file. A text editor with more conventional control scheme)
+Open the sh file: ```sudo nano addmqtttemptodb.sh``` (Or use geany to open the file. A text editor with a more conventional control scheme)
 
 In the second do loop, you will se two variables and echo's for each variable. The echo's are just so we can see the values when the docker container is running. The variables are where we split each received MQTT messege. The awk split for the first sensor is this:
 ```
@@ -131,11 +141,63 @@ awk '{split($0, array, ":")}'
                   |
                 array to store the pieces
 ```
-Explain rest of addtodb script here
+When adding a new sensor copy the previous sonsor awk command, so with sensor2 added:
+```
+#Split MQTT output
+		#Sensor1
+		sensorName1=$(echo "${payload}" | awk '{split($1,outputSensorName1,":"); print outputSensorName1[1]}')
+		temp1=$(echo "${payload}" | awk '{split($1,outputTemp1,":"); print outputTemp1[2]}')
+		echo "${sensorName1}"
+		echo "${temp1}"
+
+		#Sensor2
+		sensorName2=$(echo "${payload}" | awk '{split($2,outputSensorName2,":"); print outputSensorName2[1]}')
+		temp2=$(echo "${payload}" | awk '{split($2,outputTemp2,":"); print outputTemp2[2]}')
+		echo "${sensorName2}"
+		echo "${temp2}"
+```
+
+Increment the string in the split command. Sensor1 gets string1: ```$1```and sensor2 ```$2```, see below.     
+```
+awk '{split($2,outputSensorName2,":");}'
+            \/  
+            |        
+        Increment this                      
+```
+This is also where the space in the payload comes into play. When chosing a string with ```$1```or ```$2```, evey space in the messege is a new string. So taking a look a the received payload:
+```
+DS18B20_1:22.00 DS18B20_2:22.13
+\____________/ \/ \___________/
+    |           |    |
+String1 $1      |   String2 $2
+                Space
+```
+With a string selected, we can now get the name and temp reading by printing either the left of the semicolon or the right.
+In the print section of the awk command: ```print outputSensorName2[1]``` modify the number in the brackets, either 1 or 2. 
+
+Selecting ```[1]``` would turn string1: ```DS18B20_2:22.13``` into: ```DS18B20_2```  
+
+Selecting ```[2]``` would turn string2: ```DS18B20_2:22.13``` into:
+```22.13```
+
+So to get the name and temperature of the newly added sensor2: 
+```
+sensorName2=$(echo "${payload}" | awk '{split($2,outputSensorName2,":"); print outputSensorName2[1]}')
+temp2=$(echo "${payload}" | awk '{split($2,outputTemp2,":"); print outputTemp2[2]}')
+```
+Last is to add the two new variables, the sensor name and reading to the DB.
+```sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading) VALUES('$sensorName2', '$temp2');" .quit```  
+Replacing variables in the VALUES field with the variables of the new sensor.
+
+You are now done with this file. Save and exit
 
 ---
+With every new sensor make sure to:
+- Modify ```main.cpp``` adding two variables and append the to the payload.
+- Modify ```addmqtttemptodb.sh``` add two new variables to store the  output of awk, increment the string, write to DB with sqlite3, inserting the new variables into the command.
+- Modify ```st_active_temperature_graph.py```
 
-All done, save the file and navigate back to: ```cd subscriber/```  
+All done, navigate back to: ```subscriber/```  
 Rebuild the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_compose.yaml up --build```
 
 ## Changing IP-addresses, URL and MQTT topics
