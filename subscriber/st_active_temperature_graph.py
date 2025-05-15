@@ -18,34 +18,32 @@ def updateGraph():
 	
 	temperature1_sensor1_df = pd.DataFrame(temperature1_sensor1)
 	temperature1_sensor2_df = pd.DataFrame(temperature1_sensor2)
-	#pd.merge(temperature1_sensor1_df, temperature1_sensor2_df)
 	
-	#temperature1_sensor1_df["datetime"] = pd.to_datetime(temperature1_sensor1_df["timestamp"], format="%Y%m%d %H:%M:%S")
-	
-	
+	#Append daraframe to return
 	return temperature1_sensor1_df, temperature1_sensor2_df
 
 # Main Streamlit app
 placeholder = st.empty()
 while True:
-	df1,df2 = updateGraph()
+	
+	#Append returned dataframe here
+	sensor1_df, sensor2_df = updateGraph()
+	
 	with placeholder.container():
-		lines1 = (
-			alt.Chart(df1)
+		line1 = (
+			alt.Chart(sensor1_df)
 			.mark_line()
 			.encode(x="timestamp", y="reading", color=alt.value("red"))
 		)
-		lines2 = (
-			alt.Chart(df2)
+		line2 = (
+			alt.Chart(sensor2_df)
 			.mark_line()
 			.encode(x="timestamp", y="reading")
 		)
 		
-		st.altair_chart(lines1+lines2)
-		#st.dataframe(df)
-		#st.line_chart(df, y=["reading"])
-		print(df1["reading"])
-		print(df2["reading"])
+		st.altair_chart(line1+line2)
+		print(sensor1_df["reading"])
+		print(sensor2_df["reading"])
 	time.sleep(5)
 	st.cache_data.clear()
 	# Rerun Streamlit to update the chart

@@ -192,14 +192,82 @@ Replacing variables in the VALUES field with the variables of the new sensor.
 You are now done with this file. Save and exit
 
 ---
+### Adding sensors: st_active_temperature_graph.py
+From the subscriber folder open: ```st_active_temperature_graph.py```
 
-TO DO: explain st_active_temperature_graph.py
+In the ```updateGraph()``` function, add a variable to store the sql query: ```temperature1_sensor2 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_2" ORDER BY id')```  
+Replacing the sensor_name in the query with the same name defined in the ```main.cpp``` program.
+
+Create a pandas dataframe with the queried data: ```temperature1_sensor2_df = pd.DataFrame(temperature1_sensor2)```
+
+Append the new dataframe to the function return: ```return temperature1_sensor1_df, temperature1_sensor2_df```
+
+With two sensors the ```updateGraph()``` function would look like this:
+```
+def updateGraph():
+	conn = st.connection('temperature_db', type='sql')
+	
+	#Add sensor query here
+	temperature1_sensor1 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_1" ORDER BY id')
+	temperature1_sensor2 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_2" ORDER BY id')
+	
+	temperature1_sensor1_df = pd.DataFrame(temperature1_sensor1)
+	temperature1_sensor2_df = pd.DataFrame(temperature1_sensor2)
+	
+	return temperature1_sensor1_df, temperature1_sensor2_df
+```
+<br>
+
+In the __while true__ loop find the line: ```sensor1_df, sensor2_df = updateGraph()``` and a new variable sepereated by comma.
+
+So if you have two sensor's returned from ```updateGraph()``` be sure to have two variables when calling the function.
+```
+return temperature1_sensor1_df, temperature1_sensor2_df
+                    |               |
+                    |               |
+                  sensor1_df, sensor2_df = updateGraph()
+```
+<br>
+
+Within ```with placeholder.container():```  
+Draw a new line with:
+```
+line2 = (
+			alt.Chart(sensor2_df)
+			.mark_line()
+			.encode(x="timestamp", y="reading")
+		)
+```
+Replacing the variable in ```alt.Chart```, with the name of the variable from ```updateGraph()```  
+The strings in ```.encode``` are names of column's in the temperature1 table in the DB
+
+Draw the new line with ```st.altair_chart(line1+line2)```
+
+With two lines drawn it looks like so:
+```
+sensor1_df, sensor2_df = updateGraph()
+	
+	with placeholder.container():
+		line1 = (
+			alt.Chart(sensor1_df)
+			.mark_line()
+			.encode(x="timestamp", y="reading", color=alt.value("red"))
+		)
+		line2 = (
+			alt.Chart(sensor2_df)
+			.mark_line()
+			.encode(x="timestamp", y="reading")
+		)
+		
+		st.altair_chart(line1+line2)
+```
+Save the file
 
 ---
-With every new sensor make sure to:
-- Modify ```main.cpp``` adding two variables and append the to the payload.
+To recap, with every new sensor make sure to:
+- Modify ```main.cpp``` adding two variables and appending them to the payload.
 - Modify ```addmqtttemptodb.sh``` add two new variables to store the  output of awk, increment the string, write to DB with sqlite3, inserting the new variables into the command.
-- Modify ```st_active_temperature_graph.py```
+- Modify ```st_active_temperature_graph.py``` Query from the DB into a variable, create a pandas dataframe from query, return the dataframe. Call updategraph() with new variable to store new dataframe, draw new line with new df. 
 
 All done, navigate back to: ```subscriber/```  
 Rebuild the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_compose.yaml up --build```
@@ -210,4 +278,4 @@ To do
 ## To Do
 Add: Streamlit dashboard service to compose file which reads DB.   __DONE!!!__  
 Add: Two more temperature sensors which writes to db __PARTIAL! (Added one sensor)__  
-Add: Temp two new sensors to streamlit dashboard
+Add: Two new sensors to streamlit dashboard __PARTIAL! (Added one)__
