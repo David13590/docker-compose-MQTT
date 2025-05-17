@@ -22,12 +22,21 @@ do
 		echo "${sensorName2}"
 		echo "${temp2}"
 		
+		#Sensor3
+		sensorName3=$(echo "${payload}" | awk '{split($3,outputSensorName3,":"); print outputSensorName3[1]}')
+		temp3=$(echo "${payload}" | awk '{split($3,outputTemp3,":"); print outputTemp3[2]}')
+		echo "${sensorName3}"
+		echo "${temp3}"
+		
 		#Add to db
 		#Sensor1
 		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading) VALUES('$sensorName1', '$temp1');" .quit
 		
 		#Sensor2
 		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading) VALUES('$sensorName2', '$temp2');" .quit
+		
+		#Sensor3
+		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading) VALUES('$sensorName3', '$temp3');" .quit
 	done
-	sleep 150
+	sleep 300
 done

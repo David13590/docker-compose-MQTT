@@ -276,6 +276,7 @@ Rebuild the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_
 To do
 
 ## To Do
-Add: Streamlit dashboard service to compose file which reads DB.   __DONE!!!__  
-Add: Two more temperature sensors which writes to db __PARTIAL! (Added one sensor)__  
-Add: Two new sensors to streamlit dashboard __PARTIAL! (Added one)__
+Add: Streamlit dashboard service to compose file which reads DB.   __DONE!__  
+Add: Two more temperature sensors which writes to db __DONE!!__  
+Add: Two new sensors to streamlit dashboard __DONE!!!__  
+Add: Show highest temp within timeframe. __Pratial, shows highest temp all time__ 
