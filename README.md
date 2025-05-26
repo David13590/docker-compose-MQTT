@@ -227,8 +227,8 @@ var outObj = [{
 Note the two empty arrays in the data field
 ```
 data: [[],[]],
-		   ^
-		   |
+           ^
+           |
         New array for sensor2
 ```
 
