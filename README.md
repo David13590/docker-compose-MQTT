@@ -229,7 +229,7 @@ Note the two empty arrays in the data field
 data: [[],[]],
 		   ^
 		   |
-		New array for sensor2
+        New array for sensor2
 ```
 
 <br>  
