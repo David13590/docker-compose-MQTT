@@ -10,8 +10,7 @@ conn = st.connection('temperature_db', type='sql')
 
 #Read data from db
 def updateGraph():
-	conn = st.connection('temperature_db', type='sql')
-	
+	#conn = st.connection('temperature_db', type='sql')
 	#Query the db
 	#Sensor1
 	temp1_sensor1 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_1" ORDER BY id')
@@ -36,7 +35,6 @@ def updateGraph():
 	temp1_sensor2_df = pd.DataFrame(temp1_sensor2)	
 	temp1_sensor2_high_timeframe_df = pd.DataFrame(temp1_sensor2_high_timeframe)
 	temp1_sensor2_high_timeframe_string = temp1_sensor2_high_timeframe_df.to_string(header=False, index=False, index_names=False)
-	
 	#temperature1_sensor2_high_df = pd.Series({"DS18B20_2 High":[temperature1_sensor2_high]})
 	
 	#Sensor3
@@ -74,7 +72,8 @@ while True:
 		st.altair_chart(line1+line2+line3)
 		st.write("Sensor1 High: ", sensor1_high, "  \n", "Sensor2 High: ", sensor2_high, "  \n", "Sensor3 High: ", sensor3_high) 
 		#st.write(sensor1_high_df)
-	time.sleep(3)
-	st.cache_data.clear()
-	# Rerun Streamlit to update the chart
-	st.rerun()
+		
+		time.sleep(10)
+		st.cache_data.clear()
+		# Rerun Streamlit to update the chart
+		st.rerun()

@@ -1,0 +1,469 @@
+[
+    {
+        "id": "87fe46d38405f52d",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f96fd4977f1f55cc",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "cb7b001053edfc66",
+        "type": "ui_tab",
+        "name": "DB",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "0f4792f25c63d2d3",
+        "type": "ui_group",
+        "name": "Sensor values",
+        "tab": "cb7b001053edfc66",
+        "order": 1,
+        "disp": true,
+        "width": 19,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "4f892255e2246205",
+        "type": "sqlitedb",
+        "db": "/MQTT_database_script/temperature.db",
+        "mode": "RWC"
+    },
+    {
+        "id": "031eb32e1776d5f7",
+        "type": "ui_spacer",
+        "z": "87fe46d38405f52d",
+        "name": "spacer",
+        "group": "0f4792f25c63d2d3",
+        "order": 3,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "a4a76fdb520416af",
+        "type": "ui_button",
+        "z": "87fe46d38405f52d",
+        "name": "",
+        "group": "0f4792f25c63d2d3",
+        "order": 2,
+        "width": 8,
+        "height": 1,
+        "passthru": false,
+        "label": "Refresh data",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "fa-refresh",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 130,
+        "y": 280,
+        "wires": [
+            [
+                "953d390539cef6c0",
+                "50548a5d94d22839"
+            ]
+        ]
+    },
+    {
+        "id": "4890bcbe5df6270e",
+        "type": "function",
+        "z": "87fe46d38405f52d",
+        "name": "Plot sensor data",
+        "func": "const input1 = msg.payload.sensor1;\nconst input2 = msg.payload.sensor2;\n\n//Create empty chart object\nvar outObj = [{\n    series: [\"Sensor1\", \"Sensor2\"],\n    data: [[],[]],\n    lables: [\"\"]\n}]\n\n//Fill chart with data\nfor (let item of input1){\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of input2){\n    outObj[0].data[1].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\n\nmsg.payload = outObj;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 380,
+        "wires": [
+            [
+                "583285f4d68f8a70"
+            ]
+        ]
+    },
+    {
+        "id": "953d390539cef6c0",
+        "type": "sqlite",
+        "z": "87fe46d38405f52d",
+        "mydb": "4f892255e2246205",
+        "sqlquery": "fixed",
+        "sql": "SELECT * FROM temperature1 WHERE sensor_name = \"DS18B20_1\" ORDER BY id",
+        "name": "Sensor1",
+        "x": 500,
+        "y": 280,
+        "wires": [
+            [
+                "982be749262dbe9d",
+                "ccd6d284d4ce1d6c"
+            ]
+        ]
+    },
+    {
+        "id": "982be749262dbe9d",
+        "type": "debug",
+        "z": "87fe46d38405f52d",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "583285f4d68f8a70",
+        "type": "ui_chart",
+        "z": "87fe46d38405f52d",
+        "name": "",
+        "group": "0f4792f25c63d2d3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Graph: Sensors",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": true,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1300,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "50548a5d94d22839",
+        "type": "sqlite",
+        "z": "87fe46d38405f52d",
+        "mydb": "4f892255e2246205",
+        "sqlquery": "fixed",
+        "sql": "SELECT * FROM temperature1 WHERE sensor_name = \"DS18B20_2\" ORDER BY id",
+        "name": "Sensor2",
+        "x": 500,
+        "y": 380,
+        "wires": [
+            [
+                "fbac149b2e7130c3",
+                "54497d49c5145273"
+            ]
+        ]
+    },
+    {
+        "id": "fbac149b2e7130c3",
+        "type": "debug",
+        "z": "87fe46d38405f52d",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "6e732e776f93fc60",
+        "type": "ui_button",
+        "z": "87fe46d38405f52d",
+        "name": "",
+        "group": "0f4792f25c63d2d3",
+        "order": 2,
+        "width": 8,
+        "height": 1,
+        "passthru": false,
+        "label": "Clear data",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "read",
+        "className": "",
+        "icon": "fa-trash",
+        "payload": "[]",
+        "payloadType": "json",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 1310,
+        "y": 340,
+        "wires": [
+            [
+                "583285f4d68f8a70"
+            ]
+        ]
+    },
+    {
+        "id": "693b77b23b92800f",
+        "type": "join",
+        "z": "87fe46d38405f52d",
+        "name": "Join sensor payloads",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": true,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 970,
+        "y": 320,
+        "wires": [
+            [
+                "7571028c4c9b6cc9",
+                "4890bcbe5df6270e"
+            ]
+        ]
+    },
+    {
+        "id": "ccd6d284d4ce1d6c",
+        "type": "change",
+        "z": "87fe46d38405f52d",
+        "name": "Set topic sensor1",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "sensor1",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 690,
+        "y": 280,
+        "wires": [
+            [
+                "22dc1887faba516b",
+                "693b77b23b92800f"
+            ]
+        ]
+    },
+    {
+        "id": "22dc1887faba516b",
+        "type": "debug",
+        "z": "87fe46d38405f52d",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "54497d49c5145273",
+        "type": "change",
+        "z": "87fe46d38405f52d",
+        "name": "Set topic sensor2",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "sensor2",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 690,
+        "y": 380,
+        "wires": [
+            [
+                "2f0fa24e058b416e",
+                "693b77b23b92800f"
+            ]
+        ]
+    },
+    {
+        "id": "2f0fa24e058b416e",
+        "type": "debug",
+        "z": "87fe46d38405f52d",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7571028c4c9b6cc9",
+        "type": "debug",
+        "z": "87fe46d38405f52d",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 280,
+        "wires": []
+    }
+]

@@ -1,1 +1,7 @@
+.gitignore
+*.backup
 broker/data/mosquitto.db
+subscriber/data/mosquitto.db
+subscriber/script/.addmqtttemptodb.sh.swp
+subscriber/node-red-data/.npm/
+subscriber/node-red-data/node_modules

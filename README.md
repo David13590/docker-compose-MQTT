@@ -1,6 +1,6 @@
 # Docker and Docker compose project with mosquitto_MQTT and streamlit 
 This project aims to develop a deployable docker environment, that combines a mosquitto broker, 
-subscriber and a python program to display temperature readings on a streamlit dashboard. Making use of DS18B20 dallas temperature sensors on a esp32.
+subscriber and a python program to display temperature readings on a Node-red dashboard. Making use of DS18B20 dallas temperature sensors on a esp32.
 
 ## Setup and deployment
 ### Requirements
@@ -66,8 +66,8 @@ Print last 100 temp readings: ```SELECT * FROM (SELECT * FROM temperature1 ORDER
 ORDER BY ID ASC;```
 
 #### Viewing with the dashboard
-To view the dashboard. Open a browser and past this url: ```0.0.0.0:8501```  
-The dashboard container also prints the url to terminal.
+To view the dashboard. Open a browser and past this url: ```http://127.0.0.1:1880/ui/```  
+The dashboard container also prints the url the flow (where you edit the dashboard) to terminal.
 
 <br>  
 
@@ -192,76 +192,12 @@ Replacing variables in the VALUES field with the variables of the new sensor.
 You are now done with this file. Save and exit
 
 ---
-### Adding sensors: st_active_temperature_graph.py
-From the subscriber folder open: ```st_active_temperature_graph.py```
+### Adding sensors: Modifying Node-red dashboard (Node-red flow)
+Open the Node-red flow editor in a browser window:```127.0.0.1:1880```  
 
-In the ```updateGraph()``` function, add a variable to store the sql query: ```temperature1_sensor2 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_2" ORDER BY id')```  
-Replacing the sensor_name in the query with the same name defined in the ```main.cpp``` program.
 
-Create a pandas dataframe with the queried data: ```temperature1_sensor2_df = pd.DataFrame(temperature1_sensor2)```
+To Do
 
-Append the new dataframe to the function return: ```return temperature1_sensor1_df, temperature1_sensor2_df```
-
-With two sensors the ```updateGraph()``` function would look like this:
-```
-def updateGraph():
-	conn = st.connection('temperature_db', type='sql')
-	
-	#Add sensor query here
-	temperature1_sensor1 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_1" ORDER BY id')
-	temperature1_sensor2 = conn.query('SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_2" ORDER BY id')
-	
-	temperature1_sensor1_df = pd.DataFrame(temperature1_sensor1)
-	temperature1_sensor2_df = pd.DataFrame(temperature1_sensor2)
-	
-	return temperature1_sensor1_df, temperature1_sensor2_df
-```
-<br>
-
-In the __while true__ loop find the line: ```sensor1_df, sensor2_df = updateGraph()``` and a new variable sepereated by comma.
-
-So if you have two sensor's returned from ```updateGraph()``` be sure to have two variables when calling the function.
-```
-return temperature1_sensor1_df, temperature1_sensor2_df
-                    |               |
-                    |               |
-                  sensor1_df, sensor2_df = updateGraph()
-```
-<br>
-
-Within ```with placeholder.container():```  
-Draw a new line with:
-```
-line2 = (
-			alt.Chart(sensor2_df)
-			.mark_line()
-			.encode(x="timestamp", y="reading")
-		)
-```
-Replacing the variable in ```alt.Chart```, with the name of the variable from ```updateGraph()```  
-The strings in ```.encode``` are names of column's in the temperature1 table in the DB
-
-Draw the new line with ```st.altair_chart(line1+line2)```
-
-With two lines drawn it looks like so:
-```
-sensor1_df, sensor2_df = updateGraph()
-	
-	with placeholder.container():
-		line1 = (
-			alt.Chart(sensor1_df)
-			.mark_line()
-			.encode(x="timestamp", y="reading", color=alt.value("red"))
-		)
-		line2 = (
-			alt.Chart(sensor2_df)
-			.mark_line()
-			.encode(x="timestamp", y="reading")
-		)
-		
-		st.altair_chart(line1+line2)
-```
-Save the file
 
 ---
 To recap, with every new sensor make sure to:
@@ -276,7 +212,3 @@ Rebuild the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_
 To do
 
 ## To Do
-Add: Streamlit dashboard service to compose file which reads DB.   __DONE!__  
-Add: Two more temperature sensors which writes to db __DONE!!__  
-Add: Two new sensors to streamlit dashboard __DONE!!!__  
-Add: Show highest temp within timeframe. __DONE!!!!__

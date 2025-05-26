@@ -18,6 +18,7 @@ services:
             timeout: 10s
             retries: 3
             start_period: 15s
+    
     script_addtodb:
         build:
             context: .
@@ -30,28 +31,40 @@ services:
         volumes: 
             - ./:/MQTT_database_script/
         command: ["sh", "-c", "/MQTT_database_script/script/addmqtttemptodb.sh"]
-    st_dashboard:
-        build:
-            context: .
-            dockerfile: stdashboard.Dockerfile
-        restart: always
-        container_name: st_dashboard
+    
+    #~ st_dashboard:
+        #~ build:
+            #~ context: .
+            #~ dockerfile: stdashboard.Dockerfile
+        #~ restart: always
+        #~ container_name: st_dashboard
+        #~ ports:
+          #~ - 8501:8501
+        #~ working_dir: /MQTT_database_script/
+        #~ volumes:
+          #~ - type: bind
+            #~ source: ./.streamlit/
+            #~ target: /.streamlit/
+            
+          #~ - type: bind
+            #~ source: ./
+            #~ target: /MQTT_database_script/
+            
+            #~ #- ${PWD}/.streamlit/secrets.toml:/.streamlit/secrets.toml
+            #~ #- ./:/MQTT_database_script/
+        #~ command: ["streamlit", "run", "st_active_temperature_graph.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    
+    node-red:
+        image: nodered/node-red:latest
+        container_name: node-red
         ports:
-          - 8501:8501
-        working_dir: /MQTT_database_script/
+          - 1880:1880
         volumes:
-          - type: bind
-            source: ./.streamlit/
-            target: /.streamlit/
-            
-          - type: bind
-            source: ./
-            target: /MQTT_database_script/
-            
-            #- ${PWD}/.streamlit/secrets.toml:/.streamlit/secrets.toml
-            #- ./:/MQTT_database_script/
-        command: ["streamlit", "run", "st_active_temperature_graph.py", "--server.port=8501", "--server.address=0.0.0.0"]
-
+          - ./node-red-data:/data
+          - ./:/MQTT_database_script/
+        
+      
+      
 
 
 
