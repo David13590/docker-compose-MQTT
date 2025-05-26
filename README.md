@@ -1,4 +1,4 @@
-# Docker and Docker compose project with mosquitto_MQTT and streamlit 
+# Docker and Docker compose project with mosquitto_MQTT and Node-red 
 This project aims to develop a deployable docker environment, that combines a mosquitto broker, 
 subscriber and a python program to display temperature readings on a Node-red dashboard. Making use of DS18B20 dallas temperature sensors on a esp32.
 
@@ -47,7 +47,7 @@ Build the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_co
 Now the there should be three containers running:   
 ```addMQTTtoDB```: Subscribes to topics and adds data to DB  
 ```mosquitto_broker```: Acts as broker service.... thats it.   
-```st_dashboard```: Reads the DB and runs a dashboard with streamlit. 
+```node-red```: Reads the DB and runs a dashboard with Node-red. 
 
 Check running conatiners with ```docker ps -a```
 <br>
@@ -78,9 +78,10 @@ See this guide for adding multiple sensors to the same bus. ([Multiple sensors w
 Three files must be modified to add sensors to the system.
 - ```main.cpp```
 - ```addmqtttemptodb.sh```
-- ```st_active_temperature_graph.py```
+- ```flows.json```
 
 We will go through each file below.
+
 
 ### Adding sensors: main.cpp
 Navigate to the main cpp program, located the root of the project folder: ```/docker-compose-MQTT/main.cpp```  
@@ -192,18 +193,65 @@ Replacing variables in the VALUES field with the variables of the new sensor.
 You are now done with this file. Save and exit
 
 ---
-### Adding sensors: Modifying Node-red dashboard (Node-red flow)
-Open the Node-red flow editor in a browser window:```127.0.0.1:1880```  
+### Adding sensors: Modifying Node-red dashboard (flows.json)
+Make sure the main docker compose file is running. If not.  
+Run the docker compose file: ```docker compose -f addmqtttodb_Sub_Broker_compose.yaml up --build```  
 
+Open the Node-red flow editor in a browser window: ```127.0.0.1:1880```  
 
-To Do
+In the Node-red editor copy the ```sensor1``` sql node and ```Set topic sensor1``` node.  
+Connect the input of the new sensor to the ```refresh data``` node and the output to the newly copied topic node. Connect the topic node the the ```Join sensor payloads```  
 
+Doubleclick the sql sensor node, changing the name and sql statement to match the new sensor: ```SELECT * FROM temperature1 WHERE sensor_name = "DS18B20_2" ORDER BY id```  
+Click: done  
+
+Doubleclick the set topic node, updating the name and value field to ```sensor2```  
+Click: done  
+
+Doubleclick the ```Join sensor payloads``` node incrementing ```After a number of message parts``` to ```2```  
+Click: done
+
+Last double click the ```Plot sensor data``` node, in the tab: On Message.  
+Add a new input variable ```const input2 = msg.payload.sensor2;```  
+In the ```var outObj``` object in ```series``` add a new sensor like so: ```series: ["Sensor1", "Sensor2"],```  
+In ```data``` create a new array inside the fist array: ```data: [[],[]],```
+
+Now the ```outObj``` should look like so with two sensors: 
+```
+var outObj = [{
+    series: ["Sensor1", "Sensor2"],
+    data: [[],[]],
+    lables: [""]
+}]
+```
+Note the two empty arrays in the data field
+```
+data: [[],[]],
+		   ^
+		   |
+		New array for sensor2
+```
+
+<br>  
+
+To add a line, iterate over the new sensor2 input with a for loop, incrementing the number in ```.data``` to add to the second array of the data 3d array
+```
+for (let item of input2){
+    outObj[0].data[1].push({
+        x: item.timestamp,
+        y: item.reading
+    })
+}
+```
+Click: done
+
+Now click Deploy in the top righthand corner and open the dashboard view: ```127.0.0.1:1880/ui/```
 
 ---
 To recap, with every new sensor make sure to:
 - Modify ```main.cpp``` adding two variables and appending them to the payload.
 - Modify ```addmqtttemptodb.sh``` add two new variables to store the  output of awk, increment the string, write to DB with sqlite3, inserting the new variables into the command.
-- Modify ```st_active_temperature_graph.py``` Query from the DB into a variable, create a pandas dataframe from query, return the dataframe. Call updategraph() with new variable to store new dataframe, draw new line with new df. 
+- Modify ```flows.json```  add a sensor query, add a topic to the sensor query, join the payloads and update the plot sensor data function.
 
 All done, navigate back to: ```subscriber/```  
 Rebuild the main compose file with: ```docker compose -f addmqtttodb_Sub_Broker_compose.yaml up --build```
