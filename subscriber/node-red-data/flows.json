@@ -165,7 +165,8 @@
         "wires": [
             [
                 "953d390539cef6c0",
-                "50548a5d94d22839"
+                "50548a5d94d22839",
+                "55629bc25e42e534"
             ]
         ]
     },
@@ -174,7 +175,7 @@
         "type": "function",
         "z": "87fe46d38405f52d",
         "name": "Plot sensor data",
-        "func": "const input1 = msg.payload.sensor1;\nconst input2 = msg.payload.sensor2;\n\n//Create empty chart object\nvar outObj = [{\n    series: [\"Sensor1\", \"Sensor2\"],\n    data: [[],[]],\n    lables: [\"\"]\n}]\n\n//Fill chart with data\nfor (let item of input1){\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of input2){\n    outObj[0].data[1].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\n\nmsg.payload = outObj;\nreturn msg;",
+        "func": "const input1 = msg.payload.sensor1;\nconst input2 = msg.payload.sensor2;\nconst input3 = msg.payload.sensor3;\n\n//Create empty chart object\nvar outObj = [{\n    series: [\"Sensor1\", \"Sensor2\", \"Sensor3\"],\n    data: [[],[],[]],\n    lables: [\"\"]\n}]\n\n//Fill chart with data\nfor (let item of input1){\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of input2){\n    outObj[0].data[1].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of input3){\n    outObj[0].data[2].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nmsg.payload = outObj;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -344,7 +345,7 @@
         "useparts": false,
         "accumulate": true,
         "timeout": "",
-        "count": "2",
+        "count": "3",
         "reduceRight": false,
         "reduceExp": "",
         "reduceInit": "",
@@ -464,6 +465,67 @@
         "statusType": "auto",
         "x": 960,
         "y": 280,
+        "wires": []
+    },
+    {
+        "id": "55629bc25e42e534",
+        "type": "sqlite",
+        "z": "87fe46d38405f52d",
+        "mydb": "4f892255e2246205",
+        "sqlquery": "fixed",
+        "sql": "SELECT * FROM temperature1 WHERE sensor_name = \"DS18B20_3\" ORDER BY id",
+        "name": "Sensor3",
+        "x": 500,
+        "y": 460,
+        "wires": [
+            [
+                "1f4cb8a1c376f05d"
+            ]
+        ]
+    },
+    {
+        "id": "1f4cb8a1c376f05d",
+        "type": "change",
+        "z": "87fe46d38405f52d",
+        "name": "Set topic sensor3",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "sensor3",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 690,
+        "y": 460,
+        "wires": [
+            [
+                "693b77b23b92800f",
+                "edc0900c234a3625"
+            ]
+        ]
+    },
+    {
+        "id": "edc0900c234a3625",
+        "type": "debug",
+        "z": "87fe46d38405f52d",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 420,
         "wires": []
     }
 ]
