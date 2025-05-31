@@ -3,6 +3,8 @@ BROKER_IP=192.168.110.202
 TOPIC=esp32/ds/temperature
 DATABASE=/MQTT_database_script/temperature.db
 TABLE1=temperature1
+threshold1=25
+threshold2=28
 
 while true
 do
@@ -30,13 +32,13 @@ do
 		
 		#Add to db
 		#Sensor1
-		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading) VALUES('$sensorName1', '$temp1');" .quit
+		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading, threshold1, threshold2) VALUES('$sensorName1', '$temp1', '$threshold1', '$threshold2');" .quit
 		
 		#Sensor2
-		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading) VALUES('$sensorName2', '$temp2');" .quit
+		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading, threshold1, threshold2) VALUES('$sensorName2', '$temp2', '$threshold1', '$threshold2');" .quit
 		
 		#Sensor3
-		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading) VALUES('$sensorName3', '$temp3');" .quit
+		sqlite3 $DATABASE -cmd "INSERT INTO $TABLE1(sensor_name, reading, threshold1, threshold2) VALUES('$sensorName3', '$temp3', '$threshold1', '$threshold2');" .quit
 	done
 	sleep 300
 done

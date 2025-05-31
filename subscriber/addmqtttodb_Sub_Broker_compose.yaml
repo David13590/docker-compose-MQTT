@@ -2,6 +2,8 @@ services:
     mosquitto:
         image: eclipse-mosquitto
         container_name: mosquitto_broker
+        environment: 
+            TZ: Europe/Copenhagen
         volumes:
             - ./config:/mosquitto/config
             - ./data:/mosquitto/data
@@ -24,6 +26,8 @@ services:
             context: .
             dockerfile: addtoDB.Dockerfile
         restart: always
+        environment: 
+            TZ: Europe/Copenhagen
         container_name: addMQTTtoDB
         depends_on:
             mosquitto:
@@ -32,91 +36,30 @@ services:
             - ./:/MQTT_database_script/
         command: ["sh", "-c", "/MQTT_database_script/script/addmqtttemptodb.sh"]
     
-    #~ st_dashboard:
-        #~ build:
-            #~ context: .
-            #~ dockerfile: stdashboard.Dockerfile
-        #~ restart: always
-        #~ container_name: st_dashboard
-        #~ ports:
-          #~ - 8501:8501
-        #~ working_dir: /MQTT_database_script/
-        #~ volumes:
-          #~ - type: bind
-            #~ source: ./.streamlit/
-            #~ target: /.streamlit/
-            
-          #~ - type: bind
-            #~ source: ./
-            #~ target: /MQTT_database_script/
-            
-            #~ #- ${PWD}/.streamlit/secrets.toml:/.streamlit/secrets.toml
-            #~ #- ./:/MQTT_database_script/
-        #~ command: ["streamlit", "run", "st_active_temperature_graph.py", "--server.port=8501", "--server.address=0.0.0.0"]
-    
     node-red:
         image: nodered/node-red:latest
         container_name: node-red
+        environment: 
+            TZ: Europe/Copenhagen
         ports:
           - 1880:1880
         volumes:
           - ./node-red-data:/data
           - ./:/MQTT_database_script/
-        
-      
-      
-
-
-
-#Un-linted dosen't work cuz indents?
-#~ services:
-    #~ mosquitto:
-        #~ image: eclipse-mosquitto
-        #~ container_name: mosquitto_broker
-        #~ volumes:
-            #~ - ./config:/mosquitto/config
-            #~ - ./data:/mosquitto/data
-            #~ - ./log:/mosquitto/log
-        #~ restart: always
-        #~ ports:
-        #~ - 1883:1883
-        #~ - 9001:9001
-        #~ stdin_open: true
-        #~ tty: true
-        #~ healthcheck:
-            #~ test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
-            #~ interval: 30s
-            #~ timeout: 10s
-            #~ retries: 3
-            #~ start_period: 15s
-    #~ script_addtodb:
-        #~ build:
-            #~ context: .
-            #~ dockerfile: addtoDB.Dockerfile
-        #~ restart: always
-        #~ container_name: addMQTTtoDB
-        #~ depends_on:
-            #~ mosquitto:
-                #~ condition: service_healthy
-        #~ volumes: 
-            #~ - ./:/MQTT_database_script/
-        #~ command: ["sh", "-c", "/MQTT_database_script/script/addmqtttemptodb.sh"]
-    #~ st_dashboard:
-        #~ build:
-            #~ context: .
-            #~ dockerfile: stdashboard.Dockerfile
-        #~ restart: always
-        #~ container_name: st_dashboard
-        #~ ports:
-          #~ - 8501:8501
-        #~ working_dir: /MQTT_database_script/
-        #~ volumes:
-          #~ - type: bind
-            #~ soruce: ./.streamlit/secrets.toml
-            #~ target: /.streamlit/secrets.toml
-            #~ read_only: true
+    
+    threshold_LED:
+        build:
+            context: .
+            dockerfile: threshold_LED.Dockerfile
+        environment: 
+            TZ: Europe/Copenhagen
+        restart: always
+        container_name: threshold_LED
+        working_dir: /MQTT_database_script/
+        volumes:    
+          - type: bind
+            source: ./
+            target: /MQTT_database_script/
             
-            #~ #- ${PWD}/.streamlit/secrets.toml:/.streamlit/secrets.toml
-            #~ - ./:/MQTT_database_script/
-        #~ #command: ["streamlit", "run", "st_active_temperature_graph.py", "--server.port=8501", "--server.address=0.0.0.0"]
+        command: ["python3", "threshold_LED.py"]
 
