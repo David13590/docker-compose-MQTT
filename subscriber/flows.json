@@ -8,81 +8,7 @@
         "env": []
     },
     {
-        "id": "5b1ce21806e2339e",
-        "type": "sqlitedb",
-        "db": "/MQTT_database_script/temperature.db",
-        "mode": "RWC"
-    },
-    {
-        "id": "4f892255e2246205",
-        "type": "sqlitedb",
-        "db": "/MQTT_database_script/temperature.db",
-        "mode": "RWC"
-    },
-    {
-        "id": "cb7b001053edfc66",
-        "type": "ui_tab",
-        "name": "Sensor Dashboard",
-        "icon": "dashboard",
-        "order": 1,
-        "disabled": false,
-        "hidden": false
-    },
-    {
-        "id": "0f4792f25c63d2d3",
-        "type": "ui_group",
-        "name": "Temperature",
-        "tab": "cb7b001053edfc66",
-        "order": 2,
-        "disp": true,
-        "width": 19,
-        "collapse": false,
-        "className": ""
-    },
-    {
-        "id": "a4448716.200ac8",
-        "type": "ui_group",
-        "name": "Threshold",
-        "tab": "cb7b001053edfc66",
-        "order": 3,
-        "disp": true,
-        "width": 4,
-        "collapse": false,
-        "className": ""
-    },
-    {
-        "id": "9940d902bbf53b66",
-        "type": "ui_group",
-        "name": "Chart range",
-        "tab": "cb7b001053edfc66",
-        "order": 1,
-        "disp": true,
-        "width": 3,
-        "collapse": false,
-        "className": ""
-    },
-    {
-        "id": "2d82ceaa19b0b7e2",
-        "type": "ui_spacer",
-        "z": "87fe46d38405f52d",
-        "name": "spacer",
-        "group": "0f4792f25c63d2d3",
-        "order": 3,
-        "width": 1,
-        "height": 1
-    },
-    {
-        "id": "18cbdde4556ee8d7",
-        "type": "ui_spacer",
-        "z": "87fe46d38405f52d",
-        "name": "spacer",
-        "group": "0f4792f25c63d2d3",
-        "order": 5,
-        "width": 1,
-        "height": 1
-    },
-    {
-        "id": "2a58cbc804331bb1",
+        "id": "f96fd4977f1f55cc",
         "type": "ui_base",
         "theme": {
             "name": "theme-light",
@@ -179,11 +105,112 @@
         }
     },
     {
+        "id": "cb7b001053edfc66",
+        "type": "ui_tab",
+        "name": "Sensor Dashboard",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "0f4792f25c63d2d3",
+        "type": "ui_group",
+        "name": "Temperature",
+        "tab": "cb7b001053edfc66",
+        "order": 2,
+        "disp": true,
+        "width": 19,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "4f892255e2246205",
+        "type": "sqlitedb",
+        "db": "/MQTT_database_script/temperature.db",
+        "mode": "RWC"
+    },
+    {
+        "id": "a4448716.200ac8",
+        "type": "ui_group",
+        "name": "Threshold",
+        "tab": "cb7b001053edfc66",
+        "order": 3,
+        "disp": true,
+        "width": 4,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "9940d902bbf53b66",
+        "type": "ui_group",
+        "name": "Chart range",
+        "tab": "cb7b001053edfc66",
+        "order": 1,
+        "disp": true,
+        "width": 3,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2d82ceaa19b0b7e2",
+        "type": "ui_spacer",
+        "z": "87fe46d38405f52d",
+        "name": "spacer",
+        "group": "0f4792f25c63d2d3",
+        "order": 3,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "18cbdde4556ee8d7",
+        "type": "ui_spacer",
+        "z": "87fe46d38405f52d",
+        "name": "spacer",
+        "group": "0f4792f25c63d2d3",
+        "order": 5,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "a4a76fdb520416af",
+        "type": "ui_button",
+        "z": "87fe46d38405f52d",
+        "name": "",
+        "group": "0f4792f25c63d2d3",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Refresh data",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "fa-refresh",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 130,
+        "y": 280,
+        "wires": [
+            [
+                "953d390539cef6c0",
+                "50548a5d94d22839",
+                "55629bc25e42e534",
+                "8f679d67d86ae16a",
+                "29209d2ad9a4b8e8",
+                "fa6cc26cceb7f260"
+            ]
+        ]
+    },
+    {
         "id": "4890bcbe5df6270e",
         "type": "function",
         "z": "87fe46d38405f52d",
         "name": "Plot sensor data",
-        "func": "const input1 = msg.payload.sensor1;\nconst input2 = msg.payload.sensor2;\nconst input3 = msg.payload.sensor3;\nconst threshold1 = msg.payload.threshold1;\nconst threshold2 = msg.payload.threshold2;\n\n//Create empty chart object\nvar outObj = [{\n    series: [\"Sensor1\", \"Sensor2\", \"Sensor3\",\"\",\"\"],\n    data: [[],[],[],[],[]],\n    lables: [\"\"]\n}]\n\n//Fill chart with data\nfor (let item of input1){\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of input2){\n    outObj[0].data[1].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of input3){\n    outObj[0].data[2].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of threshold1){\n    outObj[0].data[3].push({\n        x: item.timestamp,\n        y: item.threshold1\n    })\n}\n\nfor (let item of threshold2){\n    outObj[0].data[4].push({\n        x: item.timestamp,\n        y: item.threshold2\n    })\n}\n\nmsg.payload = outObj;\nreturn msg;",
+        "func": "const input1 = msg.payload.sensor1;\nconst input2 = msg.payload.sensor2;\nconst input3 = msg.payload.sensor3;\nconst threshold1 = msg.payload.threshold1;\nconst threshold2 = msg.payload.threshold2;\n\n//Create empty chart object\nvar outObj = [{\n    series: [\"Sensor1\", \"Sensor2\", \"Sensor3\", \"threshold1\", \"threshold2\"],\n    data: [[],[],[],[],[]],\n    lables: [\"\"]\n}]\n\n//Fill chart with data\nfor (let item of input1){\n    outObj[0].data[0].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of input2){\n    outObj[0].data[1].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of input3){\n    outObj[0].data[2].push({\n        x: item.timestamp,\n        y: item.reading\n    })\n}\n\nfor (let item of threshold1){\n    outObj[0].data[3].push({\n        x: item.timestamp,\n        y: item.threshold1\n    })\n}\n\nfor (let item of threshold2){\n    outObj[0].data[4].push({\n        x: item.timestamp,\n        y: item.threshold2\n    })\n}\n\nmsg.payload = outObj;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -233,6 +260,50 @@
         "wires": []
     },
     {
+        "id": "583285f4d68f8a70",
+        "type": "ui_chart",
+        "z": "87fe46d38405f52d",
+        "name": "Plot sensors",
+        "group": "0f4792f25c63d2d3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Sensors",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "1",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#4ea6d7",
+            "#f9f06b",
+            "#f66151",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1230,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
         "id": "50548a5d94d22839",
         "type": "sqlite",
         "z": "87fe46d38405f52d",
@@ -265,6 +336,34 @@
         "x": 440,
         "y": 420,
         "wires": []
+    },
+    {
+        "id": "6e732e776f93fc60",
+        "type": "ui_button",
+        "z": "87fe46d38405f52d",
+        "name": "",
+        "group": "0f4792f25c63d2d3",
+        "order": 4,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Clear data",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "read",
+        "className": "",
+        "icon": "fa-trash",
+        "payload": "[]",
+        "payloadType": "json",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 1230,
+        "y": 480,
+        "wires": [
+            [
+                "583285f4d68f8a70"
+            ]
+        ]
     },
     {
         "id": "693b77b23b92800f",
@@ -498,6 +597,34 @@
         ]
     },
     {
+        "id": "0ee4e3ed123819e1",
+        "type": "ui_gauge",
+        "z": "87fe46d38405f52d",
+        "name": "Gauge: Sensor3",
+        "group": "a4448716.200ac8",
+        "order": 3,
+        "width": 4,
+        "height": 4,
+        "gtype": "gage",
+        "title": "Sensor3",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "25",
+        "seg2": "28",
+        "diff": false,
+        "className": "",
+        "x": 1240,
+        "y": 900,
+        "wires": []
+    },
+    {
         "id": "d458eae266b6beae",
         "type": "debug",
         "z": "87fe46d38405f52d",
@@ -577,6 +704,34 @@
         "wires": []
     },
     {
+        "id": "94b1e830844d2078",
+        "type": "ui_gauge",
+        "z": "87fe46d38405f52d",
+        "name": "Gauge: Sensor2",
+        "group": "a4448716.200ac8",
+        "order": 2,
+        "width": 4,
+        "height": 4,
+        "gtype": "gage",
+        "title": "Sensor2",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "25",
+        "seg2": "28",
+        "diff": false,
+        "className": "",
+        "x": 1240,
+        "y": 860,
+        "wires": []
+    },
+    {
         "id": "29209d2ad9a4b8e8",
         "type": "sqlite",
         "z": "87fe46d38405f52d",
@@ -635,6 +790,34 @@
         "statusType": "auto",
         "x": 660,
         "y": 700,
+        "wires": []
+    },
+    {
+        "id": "fd211d4295ed039a",
+        "type": "ui_gauge",
+        "z": "87fe46d38405f52d",
+        "name": "Gauge: Sensor1",
+        "group": "a4448716.200ac8",
+        "order": 1,
+        "width": 4,
+        "height": 4,
+        "gtype": "gage",
+        "title": "Sensor1",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "25",
+        "seg2": "28",
+        "diff": false,
+        "className": "",
+        "x": 1240,
+        "y": 820,
         "wires": []
     },
     {
@@ -893,6 +1076,35 @@
         ]
     },
     {
+        "id": "aba32ba5e93a7fec",
+        "type": "ui_button",
+        "z": "87fe46d38405f52d",
+        "name": "",
+        "group": "0f4792f25c63d2d3",
+        "order": 6,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "Delete DB data",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "red",
+        "className": "",
+        "icon": "fa-trash",
+        "payload": "[]",
+        "payloadType": "json",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 1240,
+        "y": 380,
+        "wires": [
+            [
+                "da85dbb7a0a8d687",
+                "583285f4d68f8a70"
+            ]
+        ]
+    },
+    {
         "id": "7dc8643a48b14ff1",
         "type": "sqlite",
         "z": "87fe46d38405f52d",
@@ -1035,96 +1247,6 @@
         ]
     },
     {
-        "id": "a4a76fdb520416af",
-        "type": "ui_button",
-        "z": "87fe46d38405f52d",
-        "name": "",
-        "group": "0f4792f25c63d2d3",
-        "order": 2,
-        "width": "5",
-        "height": "1",
-        "passthru": false,
-        "label": "Refresh data",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "fa-refresh",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 130,
-        "y": 280,
-        "wires": [
-            [
-                "953d390539cef6c0",
-                "50548a5d94d22839",
-                "55629bc25e42e534",
-                "8f679d67d86ae16a",
-                "29209d2ad9a4b8e8",
-                "fa6cc26cceb7f260"
-            ]
-        ]
-    },
-    {
-        "id": "6e732e776f93fc60",
-        "type": "ui_button",
-        "z": "87fe46d38405f52d",
-        "name": "",
-        "group": "0f4792f25c63d2d3",
-        "order": 4,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "Clear data",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "read",
-        "className": "",
-        "icon": "fa-trash",
-        "payload": "[]",
-        "payloadType": "json",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 1230,
-        "y": 480,
-        "wires": [
-            [
-                "583285f4d68f8a70"
-            ]
-        ]
-    },
-    {
-        "id": "aba32ba5e93a7fec",
-        "type": "ui_button",
-        "z": "87fe46d38405f52d",
-        "name": "",
-        "group": "0f4792f25c63d2d3",
-        "order": 6,
-        "width": 5,
-        "height": 1,
-        "passthru": false,
-        "label": "Delete DB data",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "red",
-        "className": "",
-        "icon": "fa-trash",
-        "payload": "[]",
-        "payloadType": "json",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 1240,
-        "y": 380,
-        "wires": [
-            [
-                "da85dbb7a0a8d687",
-                "583285f4d68f8a70"
-            ]
-        ]
-    },
-    {
         "id": "a491385b74c1eba4",
         "type": "ui_text_input",
         "z": "87fe46d38405f52d",
@@ -1142,8 +1264,8 @@
         "sendOnBlur": true,
         "className": "",
         "topicType": "str",
-        "x": 850,
-        "y": 580,
+        "x": 848.3000564575195,
+        "y": 577.666748046875,
         "wires": [
             [
                 "4d1e6cea7a8660bf"
@@ -1174,134 +1296,6 @@
             [
                 "4d1e6cea7a8660bf"
             ]
-        ]
-    },
-    {
-        "id": "0ee4e3ed123819e1",
-        "type": "ui_gauge",
-        "z": "87fe46d38405f52d",
-        "name": "Gauge: Sensor3",
-        "group": "a4448716.200ac8",
-        "order": 3,
-        "width": 4,
-        "height": 4,
-        "gtype": "gage",
-        "title": "Sensor3",
-        "label": "°C",
-        "format": "{{value}}",
-        "min": 0,
-        "max": "40",
-        "colors": [
-            "#00b500",
-            "#e6e600",
-            "#ca3838"
-        ],
-        "seg1": "25",
-        "seg2": "28",
-        "diff": false,
-        "className": "",
-        "x": 1240,
-        "y": 740,
-        "wires": []
-    },
-    {
-        "id": "94b1e830844d2078",
-        "type": "ui_gauge",
-        "z": "87fe46d38405f52d",
-        "name": "Gauge: Sensor2",
-        "group": "a4448716.200ac8",
-        "order": 2,
-        "width": 4,
-        "height": 4,
-        "gtype": "gage",
-        "title": "Sensor2",
-        "label": "°C",
-        "format": "{{value}}",
-        "min": 0,
-        "max": "40",
-        "colors": [
-            "#00b500",
-            "#e6e600",
-            "#ca3838"
-        ],
-        "seg1": "25",
-        "seg2": "28",
-        "diff": false,
-        "className": "",
-        "x": 1240,
-        "y": 700,
-        "wires": []
-    },
-    {
-        "id": "fd211d4295ed039a",
-        "type": "ui_gauge",
-        "z": "87fe46d38405f52d",
-        "name": "Gauge: Sensor1",
-        "group": "a4448716.200ac8",
-        "order": 1,
-        "width": 4,
-        "height": 4,
-        "gtype": "gage",
-        "title": "Sensor1",
-        "label": "°C",
-        "format": "{{value}}",
-        "min": 0,
-        "max": "40",
-        "colors": [
-            "#00b500",
-            "#e6e600",
-            "#ca3838"
-        ],
-        "seg1": "25",
-        "seg2": "28",
-        "diff": false,
-        "className": "",
-        "x": 1240,
-        "y": 660,
-        "wires": []
-    },
-    {
-        "id": "583285f4d68f8a70",
-        "type": "ui_chart",
-        "z": "87fe46d38405f52d",
-        "name": "Plot sensors",
-        "group": "0f4792f25c63d2d3",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "label": "Sensors",
-        "chartType": "line",
-        "legend": "true",
-        "xformat": "dd HH:mm",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
-        "ymin": "",
-        "ymax": "",
-        "removeOlder": "10",
-        "removeOlderPoints": "590",
-        "removeOlderUnit": "60",
-        "cutout": 0,
-        "useOneColor": false,
-        "useUTC": false,
-        "colors": [
-            "#26a269",
-            "#e5a50a",
-            "#241f31",
-            "#f9f06b",
-            "#f66151",
-            "#d62728",
-            "#ff9896",
-            "#9467bd",
-            "#c5b0d5"
-        ],
-        "outputs": 1,
-        "useDifferentColor": false,
-        "className": "",
-        "x": 1230,
-        "y": 520,
-        "wires": [
-            []
         ]
     }
 ]
