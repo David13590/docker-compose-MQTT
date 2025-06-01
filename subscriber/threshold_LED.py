@@ -37,15 +37,15 @@ def getSensor3Latest():
 def writeLED():
     lcd = CharLCD(i2c_expander='PCF8574', address=0x27, port=1, cols=20, rows=4, dotsize=8)
     #lcd.clear()
-    lcd.write_string('Sensor1: ')
+    lcd.write_string('Pumpehus: ')
     lcd.write_string(lastTemp1String)
     
     lcd.cursor_pos = (1,0)
-    lcd.write_string('Sensor2: ')
+    lcd.write_string('Aksel: ')
     lcd.write_string(lastTemp2String)
     
     lcd.cursor_pos = (2,0)
-    lcd.write_string('Sensor3: ')
+    lcd.write_string('Drivmotor: ')
     lcd.write_string(lastTemp3String)
 
 print ("Latest temps: ")
