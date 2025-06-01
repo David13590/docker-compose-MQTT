@@ -47,20 +47,21 @@ services:
           - ./node-red-data:/data
           - ./:/MQTT_database_script/
     
-    threshold_LED:
-        image: python-3.9-slim
-        build:
-            context: .
-            dockerfile: threshold_LED.Dockerfile
-        environment: 
-            TZ: Europe/Copenhagen
-        restart: always
-        container_name: threshold_LED
-        working_dir: /MQTT_database_script/
-        volumes:    
-          - type: bind
-            source: ./
-            target: /MQTT_database_script/
+    #~ threshold_LED:
+        #~ image: navikey/raspbian-buster:latest
+        #~ build:
+            #~ context: .
+            #~ dockerfile: threshold_LED.Dockerfile
+            #~ privileged: true
+        #~ environment: 
+            #~ TZ: Europe/Copenhagen
+        #~ restart: always
+        #~ container_name: threshold_LED
+        #~ working_dir: /MQTT_database_script/
+        #~ volumes:    
+          #~ - type: bind
+            #~ source: ./
+            #~ target: /MQTT_database_script/
             
-        command: ["python3", "threshold_LED.py"]
+        #~ command: ["python3", "threshold_LED.py"]
 

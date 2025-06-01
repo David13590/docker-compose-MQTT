@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import sqlite3 
+from RPLCD.i2c import CharLCD
 
 count = 0
 threshold1 = 25
@@ -33,28 +34,71 @@ def getSensor3Latest():
     sensor3Latest = cursor.fetchall()
     return sensor3Latest
 
-sensor1LastTemp = getSensor1Latest()
-sensor2LastTemp = getSensor2Latest()
-sensor3LastTemp = getSensor3Latest()
-
-lastTemp1 = sensor1LastTemp[0][0]
-lastTemp2 = sensor2LastTemp[0][0]
-lastTemp3 = sensor3LastTemp[0][0]
+def writeLED():
+    lcd = CharLCD(i2c_expander='PCF8574', address=0x27, port=1, cols=20, rows=4, dotsize=8)
+    #lcd.clear()
+    lcd.write_string('Sensor1: ')
+    lcd.write_string(lastTemp1String)
+    
+    lcd.cursor_pos = (1,0)
+    lcd.write_string('Sensor2: ')
+    lcd.write_string(lastTemp2String)
+    
+    lcd.cursor_pos = (2,0)
+    lcd.write_string('Sensor3: ')
+    lcd.write_string(lastTemp3String)
 
 print ("Latest temps: ")
-print (lastTemp1)
-print (lastTemp2)
-print (lastTemp3)
-
 while count < 3:
-    if lastTemp1 < threshold1:
-        print ("Sensor1 temp lower than: 24")
-        GPIO.output(redPin,True)
-        time.sleep(1)
+    sensor1LastTemp = getSensor1Latest()
+    sensor2LastTemp = getSensor2Latest()
+    sensor3LastTemp = getSensor3Latest()
+
+    lastTemp1 = sensor1LastTemp[0][0]
+    lastTemp2 = sensor2LastTemp[0][0]
+    lastTemp3 = sensor3LastTemp[0][0]
+    
+    lastTemp1String = str(lastTemp1)
+    lastTemp2String = str(lastTemp2)
+    lastTemp3String = str(lastTemp3)
+    
+    writeLED()
+    
+    print (lastTemp1)
+    print (lastTemp2)
+    print (lastTemp3)
+    
+    # ~ GPIO.output(redPin,True)
+    # ~ GPIO.output(yellowPin,True)
+    # ~ GPIO.output(greenPin,True)
+    # ~ time.sleep(1)
+    # ~ GPIO.output(redPin,False)
+    # ~ GPIO.output(yellowPin,False)
+    # ~ GPIO.output(greenPin,False)
+    # ~ time.sleep(1)
+    # ~ count += 1
+    # ~ print (count)
+    
+    #Green LED
+    if lastTemp1 < threshold1 and lastTemp2 < threshold1 and lastTemp3 < threshold1:
+        print ("All below 25C")
+        GPIO.output(greenPin,True)
         GPIO.output(redPin,False)
-        time.sleep(1)
-
-
+        GPIO.output(yellowPin,False)
+    
+    #Yellow LED
+    if lastTemp1 > threshold1 or lastTemp2 > threshold1 or lastTemp3 > threshold1:
+        print ("Above 25C")
+        GPIO.output(yellowPin,True)
+        GPIO.output(redPin,False)
+        GPIO.output(greenPin,False)
+        
+    #Red LED
+    if lastTemp1 > threshold2 or lastTemp2 > threshold2 or lastTemp3 > threshold2:
+        print ("Above 28C")
+        GPIO.output(redPin,True)
+        GPIO.output(yellowPin,False)
+        GPIO.output(greenPin,False)
 
 # state = True
 

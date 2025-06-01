@@ -427,26 +427,6 @@
             }
         }
     },
-    "node-red-node-sqlite": {
-        "name": "node-red-node-sqlite",
-        "version": "1.1.0",
-        "local": true,
-        "user": true,
-        "nodes": {
-            "sqlite": {
-                "name": "sqlite",
-                "types": [
-                    "sqlitedb",
-                    "sqlite"
-                ],
-                "enabled": true,
-                "local": true,
-                "user": false,
-                "module": "node-red-node-sqlite",
-                "file": "/data/node_modules/node-red-node-sqlite/sqlite.js"
-            }
-        }
-    },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
         "version": "3.6.5",
@@ -683,6 +663,26 @@
                 "user": false,
                 "module": "node-red-dashboard",
                 "file": "/data/node_modules/node-red-dashboard/nodes/ui_spacer.js"
+            }
+        }
+    },
+    "node-red-node-sqlite": {
+        "name": "node-red-node-sqlite",
+        "version": "1.1.0",
+        "local": true,
+        "user": true,
+        "nodes": {
+            "sqlite": {
+                "name": "sqlite",
+                "types": [
+                    "sqlitedb",
+                    "sqlite"
+                ],
+                "enabled": true,
+                "local": true,
+                "user": false,
+                "module": "node-red-node-sqlite",
+                "file": "/data/node_modules/node-red-node-sqlite/sqlite.js"
             }
         }
     }

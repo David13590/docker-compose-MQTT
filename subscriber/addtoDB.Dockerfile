@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-RUN apt update
+RUN apt-get update
 #RUN apt install tar
 #RUN wget https://mosquitto.org/files/source/mosquitto-2.0.21.tar.gz
 

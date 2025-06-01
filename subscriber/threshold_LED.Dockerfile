@@ -1,11 +1,10 @@
-FROM python:3.9-slim
+FROM navikey/raspbian-buster:latest
 
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
     software-properties-common \
-    python-dev \
-    python-rpi.gpio \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install 
+RUN pip3 install RPi.GPIO
