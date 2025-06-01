@@ -48,6 +48,7 @@ services:
           - ./:/MQTT_database_script/
     
     threshold_LED:
+        image: python-3.9-slim
         build:
             context: .
             dockerfile: threshold_LED.Dockerfile
